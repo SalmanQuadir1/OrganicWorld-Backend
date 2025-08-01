@@ -2,6 +2,7 @@ package com.ecom.Ecommerce.Service;
 
 import com.ecom.Ecommerce.DTO.SubCategoryDTO;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public interface SubCategoryService {
@@ -11,4 +12,6 @@ public interface SubCategoryService {
     List<SubCategoryDTO> getSubCategoriesByCategory(UUID categoryId);
     SubCategoryDTO updateSubCategory(UUID subCategoryId, SubCategoryDTO subCategoryDTO);
     void deleteSubCategory(UUID subCategoryId);
+    Map<String, Object> getAllSubCategoriesPaginated(int page, int size, String search);
+
 }

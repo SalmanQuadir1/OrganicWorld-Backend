@@ -7,10 +7,16 @@ import com.ecom.Ecommerce.Repository.CategoryRepository;
 import com.ecom.Ecommerce.Repository.SubCategoryRepository;
 import com.ecom.Ecommerce.Service.SubCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -88,4 +94,31 @@ public class SubCategoryServiceImpl implements SubCategoryService {
         dto.setUpdatedAt(subCategory.getUpdatedAt());
         return dto;
     }
+    @Override
+    public Map<String, Object> getAllSubCategoriesPaginated(int page, int size, String search) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+
+        Page<SubCategory> subCategoryPage;
+
+        if (search != null && !search.isEmpty()) {
+            subCategoryPage = subCategoryRepository.findByNameContainingIgnoreCase(search, pageable);
+        } else {
+            subCategoryPage = subCategoryRepository.findAll(pageable);
+        }
+
+        // Convert entities to DTOs
+        List<SubCategoryDTO> subCategoryDTOs = subCategoryPage.getContent()
+                .stream()
+                .map(this::convertToDTO) // Assuming convertToDTO method exists
+                .collect(Collectors.toList());
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("subCategories", subCategoryDTOs);
+        response.put("currentPage", subCategoryPage.getNumber());
+        response.put("totalPages", subCategoryPage.getTotalPages());
+        response.put("totalItems", subCategoryPage.getTotalElements());
+
+        return response;
+    }
+
 }

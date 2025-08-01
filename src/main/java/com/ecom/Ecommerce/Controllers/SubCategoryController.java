@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -26,10 +27,10 @@ public class SubCategoryController {
         return ResponseEntity.ok(subCategoryService.getSubCategoryById(id));
     }
 
-    @GetMapping
-    public ResponseEntity<List<SubCategoryDTO>> getAllSubCategories() {
-        return ResponseEntity.ok(subCategoryService.getAllSubCategories());
-    }
+//    @GetMapping
+//    public ResponseEntity<List<SubCategoryDTO>> getAllSubCategories() {
+//        return ResponseEntity.ok(subCategoryService.getAllSubCategories());
+//    }
 
     @GetMapping("/by-category/{categoryId}")
     public ResponseEntity<List<SubCategoryDTO>> getSubCategoriesByCategory(@PathVariable UUID categoryId) {
@@ -46,4 +47,13 @@ public class SubCategoryController {
         subCategoryService.deleteSubCategory(id);
         return ResponseEntity.noContent().build();
     }
+    @GetMapping
+    public ResponseEntity<Map<String, Object>> getAllSubCategories(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "") String search) {
+
+        return ResponseEntity.ok(subCategoryService.getAllSubCategoriesPaginated(page, size, search));
+    }
+
 }
